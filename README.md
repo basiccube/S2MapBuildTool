@@ -1,2 +1,3 @@
 # S2MapBuildTool
- Small tool for compiling Source 2 maps
+
+A small tool that lets you compile a Source 2 map.
