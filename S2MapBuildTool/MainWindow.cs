@@ -1,12 +1,15 @@
 using S2MapBuildTool.Properties;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Timers;
 
 namespace S2MapBuildTool
 {
     public partial class MainWindow : Form
     {
         public string BuildOutputLog;
+        BuildLogWindow BuildWindow = new();
+        System.Timers.Timer BuildLogTimer = new(100);
         public MainWindow()
         {
             InitializeComponent();
@@ -76,10 +79,23 @@ namespace S2MapBuildTool
                 ResCompilerCreatedProc.StartInfo.ArgumentList.Add("-outroot");
                 ResCompilerCreatedProc.StartInfo.ArgumentList.Add(Settings.Default.OutputDir);
                 ResCompilerCreatedProc.EnableRaisingEvents = true;
-                ResCompilerCreatedProc.StartInfo.RedirectStandardOutput = true;
+                //ResCompilerCreatedProc.StartInfo.RedirectStandardOutput = true;
                 ResCompilerCreatedProc.Exited += new EventHandler(BuildFinished);
                 ResCompilerCreatedProc.Start();
-                BuildOutputLog = ResCompilerCreatedProc.StandardOutput.ReadToEnd();
+                /* BuildLogTimer.AutoReset = true;
+                BuildLogTimer.Start();
+                BuildWindow.ControlBox = false;
+                BuildWindow.Show();
+                BuildLogTimer.Elapsed += (o, ea) =>
+                {
+                    BuildOutputLog = ResCompilerCreatedProc.StandardOutput.ReadToEnd();
+                    BuildWindow.BuildLog = BuildOutputLog;
+                    BuildWindow.UpdateLogText();
+                };
+                new Thread(() =>
+                {
+                    BuildOutputLog = ResCompilerCreatedProc.StandardOutput.ReadToEnd();
+                }).Start(); */
             }
         }
 
@@ -89,6 +105,7 @@ namespace S2MapBuildTool
             SaveConfigButton.Enabled = false;
             LoadConfigButton.Enabled = false;
             BuildButton.Enabled = false;
+            ViewLogButton.Enabled = false;
         }
 
         private void EnableUI()
@@ -101,8 +118,10 @@ namespace S2MapBuildTool
 
         private void BuildFinished(object sender, EventArgs e)
         {
+            BuildLogTimer.Stop();
+            BuildWindow.Hide();
             MessageBox.Show("Build done!", "Source 2 Map Build Tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            ViewLogButton.Enabled = true;
+            //ViewLogButton.Enabled = true;
             EnableUI();
         }
 

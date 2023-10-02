@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace S2MapBuildTool
+﻿namespace S2MapBuildTool
 {
     public partial class BuildLogWindow : Form
     {
@@ -19,6 +9,11 @@ namespace S2MapBuildTool
         }
 
         private void BuildLogWindow_Load(object sender, EventArgs e)
+        {
+            UpdateLogText();
+        }
+
+        public void UpdateLogText()
         {
             LogTextBox.Text = BuildLog;
         }
